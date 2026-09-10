@@ -6,4 +6,4 @@ Consists of
 2. For bot choice there is a pseudo random generation logic:
   -linear congruential method (changed ready-made solution for FASM assembler into NASM)
 
-Need to add calculation winner logic yet and catching errors
+Need to add catching errors
