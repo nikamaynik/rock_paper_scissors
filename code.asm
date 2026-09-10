@@ -10,8 +10,16 @@ section .data
     query db "Choose a number: 1 (Rock), 2 (Paper), 3 (Scissors): ", 10
     query_len equ $ - query
     res_msg db "The computer chose ", 0 
-    res_msg_len equ $ - res_msg   
+    res_msg_len equ $ - res_msg 
+    user_winner db "You win.", 0
+    user_winner_len equ $ - user_winner    
+    bot_winner db "You loose.", 0
+    bot_winner_len equ $ - bot_winner
+    draw db "It's a draw." 
+    draw_len equ $ - draw    
     newline db 0xA, 0
+    dividingline db "---------------------------------------", 10 
+    dividingline_len equ $ - dividingline     
 
     ;---Random num generation vars--- 
     minValue dd 1
@@ -49,9 +57,15 @@ _start:
     call .print            
     mov ecx, bot_number
     mov edx, 1
-    call .print       
+    call .print
+    mov ecx, newline
+    mov edx, 1 
+    call .print
+    mov ecx, dividingline
+    mov edx, dividingline_len
+    call .print    
     ;---Calculate winner---
-    ; call .calculate_winner
+    call .calculate_winner
     ;----------------------           
     jmp .exit    
 
@@ -109,3 +123,53 @@ _start:
     pop ecx
     pop ebx
     ret
+
+.calculate_winner:
+    mov al, byte [user_number]
+    mov bl, byte [bot_number]      
+    cmp al, bl
+    je .draw
+    cmp al, '2'
+    je .check_2
+    cmp al, '1'
+    je .check_1       
+    cmp al, '3' 
+    je .check_3
+     
+.check_2:
+    cmp al, bl 
+    jg .user_win 
+    jl .bot_win
+    jmp .exit
+
+.check_1:
+    cmp bl, '2'
+    je .bot_win
+    cmp bl, '3'
+    je .user_win 
+    jmp .exit          
+    
+.check_3:
+    cmp bl, '2' 
+    je .user_win 
+    cmp bl, '1' 
+    je .bot_win 
+    jmp .exit              
+
+.draw:
+    mov ecx, draw 
+    mov edx, draw_len
+    call .print
+    jmp .exit
+
+.user_win:
+    mov ecx, user_winner
+    mov edx, user_winner_len
+    call .print
+    jmp .exit
+
+.bot_win:
+    mov ecx, bot_winner 
+    mov edx, bot_winner_len 
+    call .print
+    jmp .exit            
