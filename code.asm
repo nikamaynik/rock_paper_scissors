@@ -16,7 +16,13 @@ section .data
     bot_winner db "You loose.", 0
     bot_winner_len equ $ - bot_winner
     draw db "It's a draw." 
-    draw_len equ $ - draw    
+    draw_len equ $ - draw
+    rock db " (Rock)", 10
+    rock_len equ $ - rock
+    paper db " (Paper)", 10 
+    paper_len equ $ - paper 
+    scissors db " (Scissors)", 10 
+    scissors_len equ $ - scissors      
     newline db 0xA, 0
     dividingline db "---------------------------------------", 10 
     dividingline_len equ $ - dividingline     
@@ -58,9 +64,7 @@ _start:
     mov ecx, bot_number
     mov edx, 1
     call .print
-    mov ecx, newline
-    mov edx, 1 
-    call .print
+    call .print_bot_choice    
     mov ecx, dividingline
     mov edx, dividingline_len
     call .print    
@@ -85,6 +89,33 @@ _start:
     mov eax, 1 
     xor ebx, ebx
     int 0x80
+
+.print_bot_choice:
+    cmp byte [bot_number], '1'
+    je .@1
+    cmp byte [bot_number], '2'
+    je .@2 
+    cmp byte [bot_number], '3'
+    je .@3 
+    ret    
+       
+.@1:
+    mov ecx, rock 
+    mov edx, rock_len 
+    call .print 
+    ret           
+
+.@2:
+    mov ecx, paper 
+    mov edx, paper_len  
+    call .print 
+    ret 
+
+.@3:
+    mov ecx, scissors 
+    mov edx, scissors_len  
+    call .print 
+    ret                                 
 
 .get_random_number:
     ;  ---Call sys_time and save time in milliseconds to eax ---    
