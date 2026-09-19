@@ -7,8 +7,10 @@ section .data
     welcome0_len equ $ - welcome0
     welcome1 db "Welcome User", 10
     welcome1_len equ $ - welcome1 
-    query db "Choose a number: 1 (Rock), 2 (Paper), 3 (Scissors): ", 10
-    query_len equ $ - query
+    query0 db "Choose a number: 1 (Rock), 2 (Paper), 3 (Scissors): ", 10
+    query0_len equ $ - query0
+    query1 db "Do you want to continue? (y/n): "
+    query1_len equ $ - query1
     res_msg db "The computer chose ", 0 
     res_msg_len equ $ - res_msg 
     user_winner db "You win.", 0
@@ -33,7 +35,8 @@ section .data
     
 section .bss
     user_number resb 2
-    bot_number resb 2    
+    bot_number resb 2
+    continue resb 2
     
 section .text
     global _start
@@ -46,8 +49,8 @@ _start:
     mov ecx, welcome1 
     mov edx, welcome1_len
     call .print
-    mov ecx, query 
-    mov edx, query_len
+    mov ecx, query0
+    mov edx, query0_len
     call .print
     ;---Read user input---
     mov ecx, user_number
@@ -86,6 +89,21 @@ _start:
    ret             
       
 .exit:
+   ;---Continue calculation or exit---
+    mov ecx, newline
+    mov edx, 1 
+    call .print   
+    mov ecx, query1 
+    mov edx, query1_len
+    call .print 
+    mov ecx, continue
+    mov edx, 2
+    call .read_input
+  
+    mov al, byte [continue]
+    cmp al, 'y'
+    je .restart
+    
     mov eax, 1 
     xor ebx, ebx
     int 0x80
@@ -203,4 +221,10 @@ _start:
     mov ecx, bot_winner 
     mov edx, bot_winner_len 
     call .print
-    jmp .exit            
+    jmp .exit
+
+.restart:
+    mov ecx, newline
+    mov edx, 1 
+    call .print 
+    jmp _start                                 
