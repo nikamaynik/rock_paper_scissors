@@ -83,13 +83,13 @@ _start:
     ret 
 
 .read_input:
-   mov eax, 3 
-   mov ebx, 0 
-   int 0x80
-   ret             
+    mov eax, 3 
+    mov ebx, 0 
+    int 0x80
+    ret             
       
 .exit:
-   ;---Continue calculation or exit---
+    ;---Continue calculation or exit---
     mov ecx, newline
     mov edx, 1 
     call .print   
@@ -103,7 +103,7 @@ _start:
     mov al, byte [continue]
     cmp al, 'y'
     je .restart
-    
+    ;---------------------------------
     mov eax, 1 
     xor ebx, ebx
     int 0x80
